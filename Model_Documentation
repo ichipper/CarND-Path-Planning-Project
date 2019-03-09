@@ -1,0 +1,12 @@
+The implementation of this highway driving path planning can be divided into three modules: prediction, behavior planning,  and trajectory generation. The code is all included in "main.cpp".
+
+The Prediction Module (line 106-153 in "main.cpp"):
+This module predicts the traffic condition in the current lane left lane and right lane when the car reaches the end of the remaining previous path points, based on the sensor fusion data.
+
+
+The Behavior Planning Module (line 155-177 in "main.cpp"):
+This module makes high-level driving decisions (target lane and velocity) based on the prediction. Although I did not implement explict cost functions here, the first priority is to avoid collision,  and the second is to get to the lane where the car can reach a good velocity. The acceleration and decceleration is designed to be nearly constant at 5m/s^2 (0.1m/s / 0.02s). As the the acceleration and decceleration is almost constant, the jerk is almost 0 at most of the time.
+
+
+The Trajectory Generation Module (line 179-292 in "main.cpp"):
+This module generates the trajectory based on the high-level decisions on the target lane and velocity. It uses the remaining previous path points as a starting point so that there is no discontinuities. It uses five anchor points: two at the end of the previous planned path and three spaced out ahead. It uses the spline function to generate the new trajectory based on the five anchor points.  Before using the spline function, the map coordinates are first transformed to the coordinates in the car's perspective to avoid the potential numerical problems when the spline goes vertical. After that,  the coordinates are transformed back to the map coordinates.
